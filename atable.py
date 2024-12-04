@@ -7,6 +7,10 @@ from itertools import zip_longest
 # TODO
 # 1. allow length reset after one screen has passed (24/25 rows)
 # 2. allow ignoring outliers
+# 3. delayed printing using flush/second thread
+# 4. liquid columned priting of narrow lists/tables
+# 5. allow searching through log history
+# 6. automatically print small info where waiting occurs
 
 
 class ATable:

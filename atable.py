@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from itertools import zip_longest
+import unicodedata
 
 # adaptive tables
 # TODO
@@ -18,19 +19,22 @@ from itertools import zip_longest
 
 class ATable:
 
-    def __init__(self, max_row_lenght=88, delimiter=" "):
+    def __init__(self, max_row_lenght=88, delimiter=" ", asian_chars=True):
         self.col_lens = []
         self.delimiter = delimiter
+        self.asian_chars = asian_chars
 
     def update_lens(self, *cols):
-        new_lens = [len(col) for col in cols]
+        used_len = visual_len if self.asian_chars else len
+        new_lens = [used_len(col) for col in cols]
         zips = zip_longest(self.col_lens, new_lens, fillvalue=0)
         self.col_lens = [max(zp) for zp in zips]
 
     def only_print(self, *cols):
         parts = []
         for col, length in zip(cols, self.col_lens):
-            parts.append(col.ljust(length))
+            adjusted = fw_ljust(col, length) if self.asian_chars else col.ljust(length)
+            parts.append(adjusted)
         print(self.delimiter.join(parts))
 
     def print(self, *cols):
@@ -40,3 +44,15 @@ class ATable:
 
     def reset(self):
         self.col_lens = []
+
+
+def visual_len(text):
+    WIDTH_MAP = {"W": 2, "Na": 1, "N": 1, "F": 2, "A": 1}
+    return sum(WIDTH_MAP[unicodedata.east_asian_width(char)] for char in text)
+
+
+def fw_ljust(text, width):
+    vlen = visual_len(text)
+    if vlen >= width:
+        return text
+    return text + " " * (width - vlen)

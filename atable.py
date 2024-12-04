@@ -11,6 +11,9 @@ from itertools import zip_longest
 # 4. liquid columned priting of narrow lists/tables
 # 5. allow searching through log history
 # 6. automatically print small info where waiting occurs
+# 7. right/center alignment
+# 8. handle colors/ANSI codes
+# 9. consider switching to tabulate
 
 
 class ATable:
